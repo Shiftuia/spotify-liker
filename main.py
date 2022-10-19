@@ -1,3 +1,5 @@
+import time
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -46,7 +48,10 @@ except:
     print("Successfull login")
 
 search_url = "https://open.spotify.com/search/"
+i = 0
 for l in songs_file_lines:
+    i = i + 1
+    print("Start processing song #{}".format(i))
     line = l.strip()
     print("Song: {}".format(line))
     search_path = urllib.parse.quote(line)
@@ -55,13 +60,13 @@ for l in songs_file_lines:
         songs_element = driver.find_element(By.XPATH, "//section[@aria-label='Songs']")
     except:
         print("Can't find songs element")
-        break
+        continue
 
     try:
         first_song = songs_element.find_element(By.XPATH, "(//div[@data-testid='tracklist-row'])[1]")
     except:
         print("Cant find first_song")
-        break
+        continue
 
     try:
         like_button = first_song.find_element(By.XPATH, "//button[@aria-label='Save to Your Library']")
@@ -69,4 +74,5 @@ for l in songs_file_lines:
         print("Song was saved successfully: {}".format(line))
     except:
         print("Song is already in library {}".format(line))
+        continue
 driver.close()
